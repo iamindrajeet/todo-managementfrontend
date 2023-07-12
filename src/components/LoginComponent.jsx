@@ -33,7 +33,7 @@ const LoginComponent = () => {
         saveLoggedInUser(username, role);
 
         navigator("/todos");
-        //window.location.reload(false);
+        window.location.reload(false);
     }).catch(error => {
         console.log(error.response.status)
         if(error.response && error.response.status >=400 && error.response.status < 500){
