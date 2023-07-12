@@ -12,6 +12,7 @@ import { isUserLoggedIn } from "./services/AuthService";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 
 function App() {
+
   return (
     <>
       <BrowserRouter>

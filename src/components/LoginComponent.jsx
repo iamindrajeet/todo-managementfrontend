@@ -5,6 +5,7 @@ import {
   storeToken,
 } from "../services/AuthService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const LoginComponent = () => {
   const [username, setUsername] = useState("");
@@ -32,9 +33,21 @@ const LoginComponent = () => {
         saveLoggedInUser(username, role);
 
         navigator("/todos");
-        window.location.reload(false);
+        //window.location.reload(false);
     }).catch(error => {
-        console.log(error)
+        console.log(error.response.status)
+        if(error.response && error.response.status >=400 && error.response.status < 500){
+          toast.error("Invalid Username or password", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
     })
   }
 

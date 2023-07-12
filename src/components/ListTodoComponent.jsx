@@ -69,7 +69,7 @@ const ListTodoComponent = () => {
         listAllTodos();
       })
       .catch((error) => {
-        toast.error("Couldn't delete Employee Details!!", {
+        toast.error("Couldn't delete Todo Details!!", {
           position: "top-center",
           autoClose: 2000,
           hideProgressBar: false,
