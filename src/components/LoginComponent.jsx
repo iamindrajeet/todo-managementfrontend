@@ -11,45 +11,81 @@ const LoginComponent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let valid = true;
+
+    let newErrors = {};
+
+    if (!username) {
+      newErrors.usernameError = "UserName or Email is required";
+      valid = false;
+    } else {
+      newErrors.usernameError = "";
+    }
+
+    if (!password) {
+      newErrors.passwordError = "Password is required";
+      valid = false;
+    } else {
+      newErrors.passwordError = "";
+    }
+
+    setErrors(newErrors);
+    console.log(errors);
+    return valid;
+  };
+
   const navigator = useNavigate();
 
- const handleLoginForm = async (event) => {
+  const handleLoginForm = async (event) => {
     event.preventDefault();
 
-    const loginObj = {username, password}
+    const loginObj = { username, password };
 
     console.log(loginObj);
 
-    await loginAPICall(username, password).then(response => {
-        console.log(response.data);
+    const validOrNot = validateForm();
 
-        //const token = 'Basic ' + window.btoa(username + ":" + password);
-        const token = "Bearer " + response.data.accessToken;
+    if (validOrNot) {
+      await loginAPICall(username, password)
+        .then((response) => {
+          console.log(response.data);
 
-        const role = response.data.role;
+          //const token = 'Basic ' + window.btoa(username + ":" + password);
+          const token = "Bearer " + response.data.accessToken;
 
-        storeToken(token);
+          const role = response.data.role;
 
-        saveLoggedInUser(username, role);
+          storeToken(token);
 
-        navigator("/todos");
-        window.location.reload(false);
-    }).catch(error => {
-        console.log(error.response.status)
-        if(error.response && error.response.status >=400 && error.response.status < 500){
-          toast.error("Invalid Username or password", {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-    })
-  }
+          saveLoggedInUser(username, role);
+
+          navigator("/todos");
+          window.location.reload(false);
+        })
+        .catch((error) => {
+          console.log(error.response.status);
+          if (
+            error.response &&
+            error.response.status >= 400 &&
+            error.response.status < 500
+          ) {
+            toast.error("Invalid Username or password", {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
+    }
+  };
 
   return (
     <div className="container">
@@ -65,18 +101,24 @@ const LoginComponent = () => {
               <form>
                 <div className="row mb-3">
                   <label className="col-md-3 control-label">
-                    {" "}
                     Username or Email
                   </label>
                   <div className="col-md-9">
                     <input
                       type="text"
                       name="username"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.usernameError ? "is-invalid" : ""
+                      }`}
                       placeholder="Enter username"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                     ></input>
+                    {errors.usernameError && (
+                      <div className="invalid-feedback">
+                        {errors.usernameError}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -86,11 +128,18 @@ const LoginComponent = () => {
                     <input
                       type="password"
                       name="password"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.passwordError ? "is-invalid" : ""
+                      }`}
                       placeholder="Enter password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     ></input>
+                    {errors.passwordError && (
+                      <div className="invalid-feedback">
+                        {errors.passwordError}
+                      </div>
+                    )}
                   </div>
                 </div>
 

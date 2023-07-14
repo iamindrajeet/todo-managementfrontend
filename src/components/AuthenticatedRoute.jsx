@@ -3,6 +3,7 @@ import { isUserLoggedIn } from "../services/AuthService";
 import { Navigate } from 'react-router-dom';
 
 const AuthenticatedRoute = ({ children }) => {
+  console.log(children)
   const isAuth = isUserLoggedIn();
 
   if (isAuth) {
